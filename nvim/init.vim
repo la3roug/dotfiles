@@ -8,25 +8,29 @@ Plug 'iCyMind/NeoSolarized'
 Plug 'Raimondi/delimitMate'
 Plug 'easymotion/vim-easymotion'
 Plug 'neomake/neomake'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --ts-completer' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'cloudhead/neovim-fuzzy'
+Plug 'cloudhead/neovim-fuzzy', { 'do': { -> fzf#install() } }
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
+Plug 'rhysd/git-messenger.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'simnalamburt/vim-mundo'
+Plug 'w0rp/ale'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install' }
 
 "Plug 'Shougo/deoplete.nvim'
 "Plug 'mhartington/nvim-typescript'
 
-"Plug 'w0rp/ale'
 
 call plug#end()
 "let g:deoplete#enable_at_startup = 1
 
-set guifont=Ubuntu\ Mono\ derivative\ Powerline,\ Regular\ 12
+set guifont=Ubuntu\ Mono\ derivative\ Powerline,\ Regular\ 16
 set tabpagemax=100
 set laststatus=2
 set background=dark
@@ -72,17 +76,22 @@ noremap <leader>p <C-w><S-w>
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-" tslint
-"let g:ale_linters = {
-"\   'typescript': ['tslint'],
-"\}
+" linter
+let g:ale_linters = {
+\   'typescript': ['tsserver', 'eslint'],
+\   'javascript': ['eslint']
+\}
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint']
+\}
+" let g:ale_sign_error = 'ERR'
+" let g:ale_sign_warning = 'WAR'
+" let g:neomake_javascript_enabled_makers = ['eslint']
 
 "call neomake#configure#automake('w')
 autocmd! BufWritePost,BufEnter * Neomake
 let g:neomake_open_list = 2
-
-nnoremap <leader>gg :YcmCompleter GoTo<CR>
-nnoremap <leader>r :YcmCompleter RefactorRename
 
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
@@ -95,3 +104,15 @@ let delimitMate_balance_matchpairs = 1
 
 " select last paste in visual mode
 nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1). '`]'
+
+" YouCompleteMe
+nnoremap <leader>yg :YcmCompleter GoTo<CR>
+nnoremap <leader>yR :YcmCompleter GoToReferences<CR>
+nnoremap <leader>yr :YcmCompleter RefactorRename 
+nnoremap <leader>yf :YcmCompleter FixIt<CR>
+
+" UndoTree
+nnoremap <leader>u :MundoToggle<CR>
+" UndoTree persistence
+set undofile
+set undodir=~/.vim/undo
