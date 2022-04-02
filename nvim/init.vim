@@ -8,7 +8,6 @@ Plug 'iCyMind/NeoSolarized'
 Plug 'Raimondi/delimitMate'
 Plug 'easymotion/vim-easymotion'
 Plug 'neomake/neomake'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --ts-completer' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'vim-airline/vim-airline'
@@ -20,15 +19,14 @@ Plug 'tpope/vim-surround'
 Plug 'rhysd/git-messenger.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'simnalamburt/vim-mundo'
-Plug 'w0rp/ale'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install' }
-
-"Plug 'Shougo/deoplete.nvim'
-"Plug 'mhartington/nvim-typescript'
-
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+Plug 'AndrewRadev/tagalong.vim'
+Plug 'metakirby5/codi.vim'
+Plug 'tomlion/vim-solidity'
 
 call plug#end()
-"let g:deoplete#enable_at_startup = 1
 
 set guifont=Ubuntu\ Mono\ derivative\ Powerline,\ Regular\ 16
 set tabpagemax=100
@@ -40,7 +38,7 @@ let g:solarized_termcolors=256
 set cc=100
 set showcmd
 set incsearch
-set number
+set number relativenumber
 set cursorline
 set cursorcolumn
 set tabstop=2 shiftwidth=2 expandtab
@@ -76,24 +74,11 @@ noremap <leader>p <C-w><S-w>
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-" linter
-let g:ale_linters = {
-\   'typescript': ['tsserver', 'eslint'],
-\   'javascript': ['eslint']
-\}
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint']
-\}
-" let g:ale_sign_error = 'ERR'
-" let g:ale_sign_warning = 'WAR'
-" let g:neomake_javascript_enabled_makers = ['eslint']
-
 "call neomake#configure#automake('w')
 autocmd! BufWritePost,BufEnter * Neomake
 let g:neomake_open_list = 2
 
-let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
@@ -105,14 +90,45 @@ let delimitMate_balance_matchpairs = 1
 " select last paste in visual mode
 nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1). '`]'
 
-" YouCompleteMe
-nnoremap <leader>yg :YcmCompleter GoTo<CR>
-nnoremap <leader>yR :YcmCompleter GoToReferences<CR>
-nnoremap <leader>yr :YcmCompleter RefactorRename 
-nnoremap <leader>yf :YcmCompleter FixIt<CR>
-
 " UndoTree
 nnoremap <leader>u :MundoToggle<CR>
 " UndoTree persistence
 set undofile
 set undodir=~/.vim/undo
+
+" Coc
+set updatetime=300
+let g:coc_global_extensions = [
+\   'coc-tsserver',
+\   'coc-eslint'
+\]
+
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+nmap <silent><leader>ck :call CocActionAsync('doHover')<CR>
+nmap <silent><leader>cn <Plug>(coc-diagnostic-next)
+nmap <silent><leader>cp <Plug>(coc-diagnostic-prev)
+nmap <silent><leader>cd <Plug>(coc-definition)
+nmap <silent><leader>cD <Plug>(coc-type-definition)
+nmap <silent><leader>ci <Plug>(coc-implementation)
+nmap <silent><leader>cr <Plug>(coc-rename)
+nmap <silent><leader>cR <Plug>(coc-references)
+nmap <leader>cq <Plug>(coc-fix-current)
+nmap <leader>ca <Plug>(coc-codeaction)
+autocmd FileType sass setl iskeyword+=@-@
+
+" Floding
+" set foldmethod=indent
+
+" Airline
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#fnamemod = ':t'
+
+" XXX fix storybook watch freeze at 95%
+set backupcopy=yes
+
+" command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
